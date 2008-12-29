@@ -76,7 +76,7 @@ import time
 import traceback
 import weakref
 
-from tg.util import Enum
+from util import Enum
 
 method = Enum("sequential", "forked", "threaded")
 

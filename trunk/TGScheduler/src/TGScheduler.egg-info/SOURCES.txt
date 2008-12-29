@@ -2,7 +2,7 @@ setup.py
 TGScheduler/__init__.py
 TGScheduler/release.py
 TGScheduler/scheduler.py
-TGScheduler/tgscheduler.py
+TGScheduler/util.py
 TGScheduler.egg-info/PKG-INFO
 TGScheduler.egg-info/SOURCES.txt
 TGScheduler.egg-info/dependency_links.txt
