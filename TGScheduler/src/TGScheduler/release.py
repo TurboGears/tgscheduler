@@ -1,6 +1,6 @@
 # Release information about TGScheduler
 
-version = "0.0.1"
+version = "0.0.3"
 
 description = "Turbogears Scheduler"
 long_description = "This scheduler that is based TG1's scheduler which was based on Kronos by Irmen de Jong. This scheduler makes it easy to have one time or recurring tasks run as needed"
