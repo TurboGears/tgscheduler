@@ -76,10 +76,7 @@ import time
 import traceback
 import weakref
 
-try:
-    from tg.util import Enum
-except ImportError:
-    from turbogears.util import Enum
+from tg.util import Enum
 
 method = Enum("sequential", "forked", "threaded")
 
