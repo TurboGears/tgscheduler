@@ -27,6 +27,7 @@ For more control you can use one of the following Task classes
 and use schedule_task or schedule_task_abs:
 
     IntervalTask    ThreadedIntervalTask    ForkedIntervalTask
+    SingleTask      ThreadedSingleTask      ForkedSingleTask 
     WeekdayTask     ThreadedWeekdayTask     ForkedWeekdayTask
     MonthdayTask    ThreadedMonthdayTask    ForkedMonthdayTask
 
@@ -50,20 +51,24 @@ __all__ = [
     "ForkedIntervalTask",
     "ForkedMonthdayTask",
     "ForkedScheduler",
+    "ForkedSingleTask",
     "ForkedTaskMixin",
     "ForkedWeekdayTask",
     "IntervalTask",
     "MonthdayTask",
     "Scheduler",
+    "SingleTask",
     "Task",
     "ThreadedIntervalTask",
     "ThreadedMonthdayTask",
     "ThreadedScheduler",
+    "ThreadedSingleTask",
     "ThreadedTaskMixin",
     "ThreadedWeekdayTask",
     "WeekdayTask",
     "add_interval_task",
     "add_monthday_task",
+    "add_single_task",
     "add_weekday_task",
     "cancel",
     "method",
@@ -139,6 +144,28 @@ class Scheduler:
         if not kw:
             kw = {}
         task = TaskClass(taskname, interval, action, args, kw)
+        self.schedule_task(task, initialdelay)
+        return task
+
+    def add_single_task(self, action, taskname, initialdelay, processmethod, 
+            args, kw):
+        """Add a new task to the scheduler that will only be executed once."""
+        if initialdelay < 0:
+            raise ValueError("Delay must be >0")
+        # Select the correct SingleTask class. Not all types may be available!
+        if processmethod == method.sequential:
+            TaskClass = SingleTask
+        elif processmethod == method.threaded:
+            TaskClass = ThreadedSingleTask
+        elif processmethod == method.forked:
+            TaskClass = ForkedSingleTask
+        else:
+            raise ValueError("Invalid processmethod")
+        if not args:
+            args = []
+        if not kw:
+            kw = {}
+        task = TaskClass(taskname, action, args, kw)
         self.schedule_task(task, initialdelay)
         return task
 
@@ -278,6 +305,13 @@ class Task:
         print >>sys.stderr, "-" * 20
 
 
+class SingleTask(Task):
+    """A task that only runs once."""
+
+    def reschedule(self, scheduler):
+        pass
+
+
 class IntervalTask(Task):
     """A repeated task that occurs at certain intervals (in seconds)."""
 
@@ -405,6 +439,7 @@ try:
             """Release the lock on th ethread's task queue."""
             self._lock.release()
 
+
     class ThreadedTaskMixin:
         """A mixin class to make a Task execute in a separate thread."""
 
@@ -423,6 +458,10 @@ try:
 
     class ThreadedIntervalTask(ThreadedTaskMixin, IntervalTask):
         """Interval Task that executes in its own thread."""
+        pass
+
+    class ThreadedSingleTask(ThreadedTaskMixin, SingleTask):
+        """Single Task that executes in its own thread.""" 
         pass
 
     class ThreadedWeekdayTask(ThreadedTaskMixin, WeekdayTask):
@@ -470,6 +509,7 @@ if hasattr(os, "fork"):
         def signalhandler(self, sig, stack):
             Scheduler.stop(self)
 
+
     class ForkedTaskMixin:
         """A mixin class to make a Task execute in a separate process."""
 
@@ -487,8 +527,13 @@ if hasattr(os, "fork"):
                 # we are the parent
                 self.reschedule(schedulerref())
 
+
     class ForkedIntervalTask(ForkedTaskMixin, IntervalTask):
         """Interval Task that executes in its own process."""
+        pass
+
+    class ForkedSingleTask(ForkedTaskMixin, SingleTask):
+        """Single Task that executes in its own process."""
         pass
 
     class ForkedWeekdayTask(ForkedTaskMixin, WeekdayTask):
@@ -524,6 +569,13 @@ def add_interval_task(action, interval, args=None, kw=None, initialdelay=0,
     si = _get_scheduler()
     return si.add_interval_task(action=action, interval=interval, args=args,
         kw=kw, initialdelay=initialdelay, processmethod=processmethod, 
+        taskname=taskname)
+
+def add_single_task(action, args=None, kw=None, initialdelay=0, 
+        processmethod=method.threaded, taskname=None):
+    si = _get_scheduler()
+    return si.add_single_task(action=action, args=args, kw=kw, 
+        initialdelay=initialdelay, processmethod=processmethod, 
         taskname=taskname)
 
 def add_weekday_task(action, weekdays, timeonday, args=None, kw=None,

@@ -17,7 +17,6 @@ setup(
     author=author,
     author_email=email,
     url=url,
-    #download_url=download_url,
     license=license,
     platforms=["any"],
     install_requires=[
@@ -30,7 +29,7 @@ setup(
         'turbogears.widgets', 'tg2'
     ],
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Topic :: Software Development :: Libraries :: Python Modules',
