@@ -1,4 +1,4 @@
-Simple Usuage Examples
+Simple Usage Examples
 
 = cron.py =
 
