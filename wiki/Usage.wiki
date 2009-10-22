@@ -1,6 +1,6 @@
 Simple Usage Examples
 
-= cron.py =
+= config/cron.py =
 
 {{{
 from TGScheduler import start_scheduler
@@ -33,7 +33,7 @@ def schedule():
     # ================= #
 
 }}}
-= app_cfg.py =
+= config/app_cfg.py =
 {{{
 from cron import schedule
 base_config.call_on_startup = [schedule]
