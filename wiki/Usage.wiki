@@ -5,7 +5,7 @@ Simple Usage Examples
 {{{
 from TGScheduler import start_scheduler
 from TGScheduler.scheduler import add_interval_task, add_weekday_task, add_single_task
-
+import sys
 import logging
 log = logging.getLogger(__name__)
 
@@ -14,6 +14,10 @@ def testTask(email=None):
 
 def schedule():
     """ start scheduler and setup recurring tasks """
+
+    if "shell" in sys.argv: # disable cron in paster shell mode
+        return
+
     log.info("Starting Scheduler Manager")
     start_scheduler()
     
